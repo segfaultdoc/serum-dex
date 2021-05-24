@@ -45,11 +45,10 @@ enum Action {
     ConsumeEvents(u16),
     SettleFunds(OwnerId, Option<ReferrerId>),
     SweepFees,
-<<<<<<< HEAD
-    CloseOpenOrders {
-=======
     InitOpenOrders {
->>>>>>> Add init open orders to fuzz test
+        owner_id: OwnerId,
+    },
+    CloseOpenOrders {
         owner_id: OwnerId,
     },
 }
@@ -610,8 +609,8 @@ fn run_action<'bump>(
                 owners.remove(&owner_id).unwrap();
                 r
             })
-								.ok();
-				}
+            .ok();
+        }
     };
 
     if *VERBOSE >= 2 {
