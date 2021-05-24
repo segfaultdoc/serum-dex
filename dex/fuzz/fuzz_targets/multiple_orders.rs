@@ -569,6 +569,7 @@ fn run_action<'bump>(
             )
             .unwrap();
         }
+
         Action::InitOpenOrders { owner_id } => {
             let owner = owners
                 .entry(owner_id)
@@ -583,8 +584,9 @@ fn run_action<'bump>(
                 ],
                 &MarketInstruction::InitOpenOrders.pack(),
             )
-            .ok();
+            .unwrap();
         }
+
         Action::CloseOpenOrders { owner_id } => {
             let owner = owners
                 .entry(owner_id)
