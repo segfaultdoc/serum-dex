@@ -45,7 +45,11 @@ enum Action {
     ConsumeEvents(u16),
     SettleFunds(OwnerId, Option<ReferrerId>),
     SweepFees,
+<<<<<<< HEAD
     CloseOpenOrders {
+=======
+    InitOpenOrders {
+>>>>>>> Add init open orders to fuzz test
         owner_id: OwnerId,
     },
 }
@@ -566,7 +570,22 @@ fn run_action<'bump>(
             )
             .unwrap();
         }
-
+        Action::InitOpenOrders { owner_id } => {
+            let owner = owners
+                .entry(owner_id)
+                .or_insert_with(|| Owner::new(&market_accounts, &bump));
+            process_instruction(
+                market_accounts.market.owner,
+                &[
+                    owner.orders_account.clone(),
+                    owner.signer_account.clone(),
+                    market_accounts.market.clone(),
+                    market_accounts.rent_sysvar.clone(),
+                ],
+                &MarketInstruction::InitOpenOrders.pack(),
+            )
+            .ok();
+        }
         Action::CloseOpenOrders { owner_id } => {
             let owner = owners
                 .entry(owner_id)
@@ -591,8 +610,8 @@ fn run_action<'bump>(
                 owners.remove(&owner_id).unwrap();
                 r
             })
-            .ok();
-        }
+								.ok();
+				}
     };
 
     if *VERBOSE >= 2 {
